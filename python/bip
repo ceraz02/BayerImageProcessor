@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Activate your virtual environment
+source /path to BayerImageProcessor/.venv/bin/activate
+
+# Call the actual Python script with all passed arguments
+python3 /path to BayerImageProcessor/python/BayerImageProcessor.py "$@"
+
