@@ -1,3 +1,28 @@
+"""
+shiftRightImage.py
+==================
+
+Shift a region of a raw Bayer .bin image buffer to the right by a specified number of bytes.
+
+This module is used to correct misalignments in binary image data. Mimics the behavior of the C version (shiftRightImage.c).
+
+Authors
+-------
+- Ahmad Asyraf Ahmad Saibudin (original author)
+
+Created: 2025-07-16
+Last modified: 2025-09
+Version: 1.0
+
+License
+-------
+CSUG 2022-2025. All rights reserved.
+
+Notes
+-----
+Execution:   python shiftRightImage.py img_file shift_count start_row [start_col [img_width img_height]]
+"""
+
 import sys
 import os
 import numpy as np

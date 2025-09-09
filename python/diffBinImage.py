@@ -1,3 +1,28 @@
+"""
+diffBinImage.py
+===============
+
+Compare two binary image files byte-by-byte and report differing regions.
+
+This module compares two binary image files and reports the regions where they differ.
+
+Authors
+-------
+- Ahmad Asyraf Ahmad Saibudin (original author)
+
+Created: 2025-07-16
+Last modified: 2025-09
+Version: 1.0
+
+License
+-------
+CSUG 2022-2025. All rights reserved.
+
+Notes
+-----
+Execution:   python diffBinImage.py file1.bin file2.bin
+"""
+
 import sys
 
 if len(sys.argv) != 3:

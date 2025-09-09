@@ -1,3 +1,30 @@
+"""
+detectAndFixShift.py
+====================
+
+Detect and fix a single-byte shift in raw Bayer .bin images.
+
+This module detects the most likely position of a missing byte (causing Bayer pattern break)
+in a raw Bayer image and corrects the image by shifting the data and filling the lost byte with zero.
+Useful for fixing corrupted satellite/camera Bayer images.
+
+Authors
+-------
+- Ahmad Asyraf Ahmad Saibudin (original author)
+
+Created: 2025-07-16
+Last modified: 2025-09
+Version: 1.0
+
+License
+-------
+CSUG 2022-2025. All rights reserved.
+
+Notes
+-----
+Execution:   python detectAndFixShift.py input.bin output_fixed.bin
+"""
+
 import numpy as np
 import cv2
 

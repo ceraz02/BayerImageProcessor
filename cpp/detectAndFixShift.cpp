@@ -1,3 +1,36 @@
+/**
+ * @file    detectAndFixShift.cpp
+ * @brief   Detect and fix a single-byte shift in raw Bayer .bin images.
+ *
+ * This program detects the most likely position of a missing byte (causing Bayer pattern break)
+ * in a raw Bayer image and corrects the image by shifting the data and filling the lost byte with zero.
+ * Useful for fixing corrupted satellite/camera Bayer images.
+ *
+ * Usage:
+ *   detectAndFixShift.exe input.bin output_fixed.bin
+ *
+ * @author  Ahmad Asyraf Ahmad Saibudin
+ * @date    2025-07-16
+ * @version 1.0 (SEP 2025)
+ *
+ * @copyright
+ * CSUG 2022-2025. All rights reserved.
+ *
+ * @note
+ * Requires OpenCV library.
+ * - For Windows :
+ *      Compilation: see CMakeLists.txt in cpp/. (OpenCV via vcpkg)
+ *          cd cpp
+ *          mkdir build
+ *          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=C:/<path/to/vcpkg>/scripts/buildsystems/vcpkg.cmake
+ *          cd build
+ *          cmake --build . --target detectAndFixShift
+ *      Executable:  cpp/build/bin/Debug/detectAndFixShift.exe
+ * - For Linux :
+ *      Compilation: see Makefile in cpp/. (make test_detectAndFixShift.exe)
+ *      Executable:  cpp/exe/test_detectAndFixShift.exe
+ */
+
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <fstream>

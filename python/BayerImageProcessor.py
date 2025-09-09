@@ -1,3 +1,36 @@
+"""
+BayerImageProcessor.py
+======================
+
+Convert raw Bayer .bin images (4098x4096) to PNG (raw and colorized), extract header/footer metadata, and batch process files/folders.
+
+Features
+--------
+- Converts .bin files to PNG (raw and colorized)
+- Batch processing of files/folders
+- Extracts header/footer info (analog gain, integration time)
+- Adjustable PNG compression
+- Option to skip PNG and only extract metadata
+- Series processing (process all files with a given prefix)
+
+Authors
+-------
+- Ahmad Asyraf Ahmad Saibudin (original author)
+
+Created: 2025-07-16
+Last modified: 2025-09
+Version: 1.0
+
+License
+-------
+CSUG 2022-2025. All rights reserved.
+
+Notes
+-----
+Requires numpy, opencv-python.
+Execution:   python BayerImageProcessor.py [options] input1.bin input2.bin ... | folder1 folder2 ...
+"""
+
 import numpy as np
 import cv2
 import argparse

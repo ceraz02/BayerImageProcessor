@@ -1,5 +1,24 @@
-
-
+/**
+ * @file    shiftRightImage.c
+ * @brief   Shift a region of a raw Bayer .bin image buffer to the right by a specified number of bytes.
+ *
+ * Used to correct misalignments in binary image data. Mimics the behavior of the Python version (shiftRightImage.py).
+ *
+ * Usage:
+ *   shiftRightImage.exe img_file shift_count start_row [start_col [img_width img_height]]
+ *
+ * @author  Ahmad Asyraf Ahmad Saibudin
+ * @date    2025-07-16
+ * @version 1.0 (SEP 2025)
+ *
+ * @copyright
+ * CSUG 2022-2025. All rights reserved.
+ *
+ * @note
+ * Compilation: see Makefile in cpp/.
+ *      make test_shiftRightImage.exe
+ * Executable:  cpp/exe/test_shiftRightImage.exe
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
