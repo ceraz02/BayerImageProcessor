@@ -351,11 +351,21 @@ def resource_path(relative_path):
 
 def main():
 	root = tk.Tk()
-	icon_path = resource_path("assets/bip-icon.ico")
-	try:
-		root.iconbitmap(icon_path)
-	except Exception as e:
-		print(f"Warning: Could not set window icon: {e}")
+	import platform
+	system = platform.system()
+	if system == "Windows":
+		icon_path = resource_path("assets/bip-icon.ico")
+		try:
+			root.iconbitmap(icon_path)
+		except Exception as e:
+			print(f"Warning: Could not set window icon: {e}")
+	else:
+		icon_path = resource_path("assets/bip-icon.png")
+		try:
+			img = tk.PhotoImage(file=icon_path)
+			root.iconphoto(True, img)
+		except Exception as e:
+			print(f"Warning: Could not set window icon: {e}")
 	root.title("Bayer Image Processor")
 	style = Style("flatly")
 	notebook = ttk.Notebook(root)

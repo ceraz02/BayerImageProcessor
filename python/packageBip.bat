@@ -18,8 +18,8 @@ pyinstaller ^
 REM --windowed
 
 REM Check if build succeeded
-if exist dist\GUI.exe (
-	echo Build succeeded! Find your executable in dist\GUI.exe
+if exist dist\BayerImageProcessor.exe (
+	echo Build succeeded! Find your executable in dist\BayerImageProcessor.exe
 ) else (
 	echo Build failed. Check the output above for errors.
 )
