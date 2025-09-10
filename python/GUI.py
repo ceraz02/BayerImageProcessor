@@ -1,3 +1,44 @@
+"""
+GUI.py
+======
+
+Unified graphical user interface for Bayer image processing tools.
+
+Purpose
+-------
+Provides a modern, tabbed GUI for all major Bayer image processing features, integrating:
+- Bayer .bin to PNG conversion and metadata extraction
+- Image region shift correction
+- Single-byte shift detection and repair
+
+Features
+--------
+- Tabbed interface for three tools: Binary To PNG, Shift Right Image, Detect & Fix Shift
+- Batch processing: add multiple files and/or directories
+- Series detection and selection (auto-detects image series from filenames)
+- Flexible output options: output directory, mode (normal/colorize/both/none), compression level, header/footer extraction
+- Shift correction tools: specify shift count, start row/col, width/height
+- Live progress bar, status label, and error/success popups
+- Threaded processing for responsive UI
+- Robust handling of edge cases (missing input/output, no files found, etc.)
+- Cross-platform (Windows, Linux, macOS)
+
+Usage
+-----
+	python GUI.py
+
+Authors
+-------
+- Ahmad Asyraf Ahmad Saibudin (original author)
+
+Created: 2025-08-01
+Last modified: 2025-09
+Version: 1.0
+
+License
+-------
+CSUG 2022-2025. All rights reserved.
+"""
 
 import os
 import sys
