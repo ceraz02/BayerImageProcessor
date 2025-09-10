@@ -30,6 +30,16 @@ A comprehensive toolkit for processing raw Bayer images (`.bin` files) from sate
 - **Adjustable PNG compression** (Python)
 - **Flexible output modes**: Choose between normal, colorized, both, or metadata-only outputs
 - **Cross-language parity**: Both Python and C++ tools provide similar functionality for comparison and validation
+- **Graphical User Interface (GUI) features** (Python):
+	- Select multiple files and/or directories for batch processing
+	- Remove selected files/directories from the input list
+	- Live progress bar and status label for feedback during processing
+	- Series selection: process only a specific image series (auto-detected from filenames)
+	- Compression level slider with live value label
+	- Output mode, header/footer, and output directory selection
+	- Prints the equivalent CLI command for the current GUI settings
+	- Error and success popups for user feedback
+	- Robust handling of edge cases (no input, no output, no files found, etc.)
 
 ## Requirements
 
@@ -40,7 +50,8 @@ A comprehensive toolkit for processing raw Bayer images (`.bin` files) from sate
 
 Install Python dependencies:
 ```sh
-pip install numpy opencv-python
+pip install numpy opencv-python argparse ttkbootstrap
+sudo apt-get install python3-tk  # For Debian/Ubuntu systems
 ```
 
 ### C++
@@ -51,18 +62,20 @@ pip install numpy opencv-python
 
 ### Python
 
+#### Command-Line Interface (CLI)
+
 ```sh
 python python/BayerImageProcessor.py [inputs] [options]
 ```
 
-#### Arguments
+**Arguments:**
 - `inputs` : One or more `.bin` files or directories containing `.bin` files
 - `-o`, `--output` : Output directory (default: current directory)
 - `-m`, `--mode` : Output mode (`normal`, `colorize`, `both`, `none`)
 - `-c`, `--compression` : PNG compression level (0-9, default: 3)
 - `-hf`, `--headerfooter` : Extract and write header/footer info to a text file
 
-#### Examples
+**Examples:**
 - Convert a single file:
 	```sh
 	python python/BayerImageProcessor.py test_images/03_20250715_162736_04_b.bin
@@ -79,6 +92,70 @@ python python/BayerImageProcessor.py [inputs] [options]
 	```sh
 	python python/BayerImageProcessor.py test_images/03_20250715_162736_04_b.bin -c 9
 	```
+
+
+#### Graphical User Interface (GUI)
+
+
+The project includes a modern, multi-tool GUI for Bayer image processing, built with `tkinter` and `ttkbootstrap`. The GUI provides an intuitive, tabbed interface for all major features, including batch processing, metadata extraction, image correction, and shift detection/fixing.
+
+**Launching the GUI:**
+
+```sh
+python python/BayerImageProcessor.py
+```
+or, if packaged:
+```sh
+dist/BayerImageProcessor.exe
+```
+
+**Main Features:**
+
+- **Tabbed Interface:**
+	- **Binary To PNG:** Convert `.bin` Bayer images to PNG (raw and/or colorized), extract header/footer metadata, batch process files/folders, and select image series.
+	- **Shift Right Image:** Shift a region of a raw Bayer image buffer to the right by a specified number of bytes (for correcting misalignments).
+	- **Detect & Fix Shift:** Detect and fix a single-byte shift in raw Bayer images (for repairing corrupted files).
+
+- **Batch Processing:**
+	Add multiple files and/or directories for batch conversion or correction. The GUI will recursively find all `.bin` files in selected folders.
+
+- **Series Detection and Selection:**
+	Automatically detects image series (e.g., `03_20250715_162736`) from filenames and allows you to process only a specific series, or all files at once.
+
+- **Flexible Output Options:**
+	- Choose output directory.
+	- Select output mode: normal (raw PNG), colorized (RGB PNG), both, or metadata-only.
+	- Adjust PNG compression level (0-9) with a live value label.
+	- Optionally extract and save header/footer metadata for each image.
+
+- **Shift Correction Tools:**
+	- **Shift Right Image:** Specify shift count, start row/column, and (optionally) image width/height.
+	- **Detect & Fix Shift:** Automatically detects the most likely position of a missing byte and corrects the image.
+
+- **Live Feedback and Usability:**
+	- Progress bar and status label for real-time feedback.
+	- Error and success popups for user feedback.
+	- Robust handling of edge cases (no input, no output, no files found, etc.).
+	- All processing is threaded, so the GUI remains responsive during long operations.
+
+- **Cross-platform:**
+	Works on Windows, Linux, and macOS (with minor adjustments for icon format on non-Windows).
+
+**Packaging the GUI as a Standalone Executable (Windows):**
+
+You can package the GUI as a single-file Windows executable using PyInstaller. A batch script is provided:
+
+```sh
+cd python
+packageBip.bat
+```
+
+This will:
+- Clean previous build outputs.
+- Create `dist/BayerImageProcessor.exe` (standalone, double-clickable).
+
+**Note:**
+- All GUI features are available regardless of whether you run from source or as a packaged executable.
 
 ### C++
 
@@ -114,9 +191,22 @@ cpp\build\bin\Debug\detectAndFixShift.exe input.bin reference.bin
 
 - Use files in `test_images/` to validate processing and compare outputs between Python and C++ implementations.
 
+
+## Documentation & Code Clarity
+
+All main Python and C++ programs in this project now include detailed file/module docstrings or Doxygen-style headers at the top of each file. These headers provide:
+- File/module purpose and summary
+- Author and contributor information
+- Creation and modification dates
+- Versioning
+- License and copyright
+- Usage notes and requirements
+
+This ensures the codebase is self-explanatory, easy to maintain, and ready for onboarding new contributors or future development.
+
 ## Summary
 
-This project provides a robust, cross-language solution for Bayer image processing, including conversion, metadata extraction, error handling, and shift correction. It is suitable for both research and production environments where reliability and flexibility are required.
+This project provides a robust, cross-language solution for Bayer image processing, including conversion, metadata extraction, error handling, shift correction, and comprehensive documentation. It is suitable for both research and production environments where reliability, flexibility, and maintainability are required.
 
 ---
 

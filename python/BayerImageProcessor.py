@@ -53,7 +53,11 @@ import argparse
 def write_header_footer_to_file(hf, bin_path, raw):
     base = os.path.splitext(os.path.basename(bin_path))[0]
     # Extract image number from base (assumes format regionID_timestamp_ImgNb)
-    img_nb = base.split('_')[-1] if '_' in base else base
+    parts = base.split('_', 3)
+    if len(parts) >= 4:
+        img_nb = parts[3]
+    else:
+        img_nb = base
     header_bytes = raw[0, :11]
     footer_bytes = raw[-1, :66]
     hf.write(f"File: {img_nb}\n")
@@ -67,7 +71,7 @@ def write_header_footer_to_file(hf, bin_path, raw):
     hf.write(f"Footer : {' '.join(f'{b:02X}' for b in footer_bytes)}\n")
     hf.write(f"         {' '.join(str(b) for b in footer_bytes)}\n\n")
 
-def process_bin_file(bin_path, output_dir, mode, compression_level, header_footer_path=None):
+def process_bin_file(bin_path, output_dir, mode, compression_level, headerfooter=False):
     with open(bin_path, "rb") as f:
         raw = np.fromfile(f, dtype=np.uint8)
     expected_size = 4098 * 4096
@@ -87,7 +91,7 @@ def process_bin_file(bin_path, output_dir, mode, compression_level, header_foote
         rgb_image = cv2.cvtColor(raw_image, cv2.COLOR_BAYER_RG2RGB)
         cv2.imwrite(os.path.join(output_dir, f"{base}_colorize.png"), rgb_image, compression_params)
     # Header/Footer extraction and writing
-    if header_footer_path:
+    if headerfooter:
         header_footer_file = os.path.join(output_dir, f"{base}_header_footer.txt")
         with open(header_footer_file, "w") as hf:
             write_header_footer_to_file(hf, bin_path, raw)
@@ -135,10 +139,29 @@ def process_series_bin_files(series_name, inputs, output_dir, mode, compression_
     finally:
         if hf:
             hf.close()
+    
+# Unified entry point for GUI and CLI
+def process_bayer_images(inputs, output, mode, compression, headerfooter, series=None):
+    if series:
+        process_series_bin_files(series, inputs, output, mode, compression, write_headerfooter=headerfooter)
+    else:
+        # Gather all .bin files from inputs
+        bin_files = []
+        for inp in inputs:
+            if os.path.isdir(inp):
+                bin_files.extend(glob.glob(os.path.join(inp, "*.bin")))
+            elif inp.lower().endswith(".bin"):
+                bin_files.append(inp)
+        if not bin_files:
+            print("No .bin files found in the provided inputs.")
+            return
+        os.makedirs(output, exist_ok=True)
+        for bin_file in bin_files:
+            process_bin_file(bin_file, output, mode, compression, headerfooter)
 
 
 # CLI logic
-def main():
+def cli_main(args=None):
     parser = argparse.ArgumentParser(description="Convert raw Bayer .bin images (4098x4096) to PNG (raw and colorized), extract header/footer metadata, and batch process files/folders. (If arguments are provided, runs in CLI mode; otherwise, launches GUI.)")
     parser.add_argument("inputs", nargs="+", help="Input .bin files or directories")
     parser.add_argument("-o", "--output", default=".", help="Output directory. Default is current directory.")
@@ -158,32 +181,12 @@ def main():
     parser.add_argument(
         "-s", "--series", type=str, help="Series name for image series processing (e.g. 03_20250715_162736)")
 
-    args = parser.parse_args()
-
-    if args.series:
-        process_series_bin_files(
-            args.series, args.inputs, args.output, args.mode, args.compression,
-            write_headerfooter=args.headerfooter
-        )
+    if args is None:
+        args = parser.parse_args()
     else:
-        # Gather all .bin files from inputs
-        bin_files = []
-        for inp in args.inputs:
-            if os.path.isdir(inp):
-                bin_files.extend(glob.glob(os.path.join(inp, "*.bin")))
-            elif inp.lower().endswith(".bin"):
-                bin_files.append(inp)
-        if not bin_files:
-            print("No .bin files found.")
-            exit(1)
-        os.makedirs(args.output, exist_ok=True)
-        total_files = len(bin_files)
-        for idx, bin_file in enumerate(bin_files, 1):
-            print(f"Processing image {idx} of {total_files}: {os.path.basename(bin_file)}")
-            process_bin_file(
-                bin_file, args.output, args.mode, args.compression,
-                header_footer_path=args.headerfooter if args.headerfooter else None
-            )
+        args = parser.parse_args(args)
+
+    process_bayer_images(args.inputs, args.output, args.mode, args.compression, args.headerfooter, args.series)
 
 
 
@@ -198,11 +201,13 @@ class ImageProcessorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Binary Image Processor")
-        self.style = ttk.Style("superhero")
+        self.style = ttk.Style("flatly")
         self.input_paths = []
         self.output_dir = ""
         self.series_options = []
         self.selected_series = tk.StringVar()
+        self.root.resizable(True, False)
+        self.root.minsize(510, 500)
 
 
         # Input and series selection frame
@@ -455,10 +460,10 @@ class ImageProcessorApp:
 
 # Run the app
 if __name__ == "__main__":
-     # Check if the program was called with command line arguments
-    if len(os.sys.argv) > 1:
-        main()  # Run in CLI mode
+    import sys
+    if len(sys.argv) > 1:
+        cli_main()
     else:
         root = tk.Tk()
-        app = ImageProcessorApp(root)  # Run the Tkinter GUI
+        app = ImageProcessorApp(root)
         root.mainloop()

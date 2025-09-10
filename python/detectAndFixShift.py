@@ -79,5 +79,4 @@ if __name__ == "__main__":
     parser.add_argument("input", help="Input raw binary file")
     parser.add_argument("output", help="Output corrected binary file")
     args = parser.parse_args()
-    
     detect_and_fix_shift(args.input, args.output)

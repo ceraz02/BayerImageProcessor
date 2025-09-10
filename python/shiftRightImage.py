@@ -64,19 +64,7 @@ def shift_image_region_numpy(buf: np.ndarray, img_width: int, img_height: int,
     return 0
 
 
-def main():
-    argc = len(sys.argv)
-    if argc not in (4, 5, 7):
-        print(f"USAGE: {sys.argv[0]} img_file shift_count start_row [start_col [img_width img_height]]")
-        return 1
-
-    img_file = sys.argv[1]
-    shift_count = int(sys.argv[2])
-    start_row = int(sys.argv[3])
-    start_col = int(sys.argv[4]) if argc >= 5 else 0
-    img_width = int(sys.argv[5]) if argc == 7 else IMG_WIDTH
-    img_height = int(sys.argv[6]) if argc == 7 else FRAME_HEIGHT
-
+def shift_right_image_file(img_file, shift_count, start_row, start_col=0, img_width=4096, img_height=4098):
     if shift_count < 1:
         print(f"ERROR in shiftRightImage: Invalid shift_count {shift_count}. Must be >= 1.")
         return 1
@@ -117,6 +105,22 @@ def main():
 
     print(f"Successfully shifted image region in {img_file}")
     return 0
+
+def main():
+
+    argc = len(sys.argv)
+    if argc not in (4, 5, 7):
+        print(f"USAGE: {sys.argv[0]} img_file shift_count start_row [start_col [img_width img_height]]")
+        return 1
+
+    img_file = sys.argv[1]
+    shift_count = int(sys.argv[2])
+    start_row = int(sys.argv[3])
+    start_col = int(sys.argv[4]) if argc >= 5 else 0
+    img_width = int(sys.argv[5]) if argc == 7 else IMG_WIDTH
+    img_height = int(sys.argv[6]) if argc == 7 else FRAME_HEIGHT
+
+    return shift_right_image_file(img_file, shift_count, start_row, start_col, img_width, img_height)
 
 
 if __name__ == "__main__":
