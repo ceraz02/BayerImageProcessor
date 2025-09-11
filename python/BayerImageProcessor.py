@@ -96,7 +96,7 @@ def process_bin_file(bin_path, output_dir, mode, compression_level, headerfooter
         with open(header_footer_file, "w") as hf:
             write_header_footer_to_file(hf, bin_path, raw)
 
-def process_series_bin_files(series_name, inputs, output_dir, mode, compression_level, write_headerfooter=False):
+def process_series_bin_files(series_name, inputs, output_dir, mode, compression_level, write_headerfooter=False, progress_callback=None):
     pattern = f"{series_name}_*.bin"
     series_files = []
     for inp in inputs:
@@ -115,6 +115,8 @@ def process_series_bin_files(series_name, inputs, output_dir, mode, compression_
         hf = open(header_footer_file, "w")
     try:
         for idx, bin_file in enumerate(series_files, 1):
+            if progress_callback:
+                progress_callback(idx, total_files, bin_file)
             print(f"Processing image {idx} of {total_files}: {os.path.basename(bin_file)}")
             with open(bin_file, "rb") as f:
                 raw = np.fromfile(f, dtype=np.uint8)
@@ -141,9 +143,9 @@ def process_series_bin_files(series_name, inputs, output_dir, mode, compression_
             hf.close()
     
 # Unified entry point for GUI and CLI
-def process_bayer_images(inputs, output, mode, compression, headerfooter, series=None):
+def process_bayer_images(inputs, output, mode, compression, headerfooter, series=None, progress_callback=None):
     if series:
-        process_series_bin_files(series, inputs, output, mode, compression, write_headerfooter=headerfooter)
+        process_series_bin_files(series, inputs, output, mode, compression, write_headerfooter=headerfooter, progress_callback=progress_callback)
     else:
         # Gather all .bin files from inputs
         bin_files = []
@@ -156,7 +158,10 @@ def process_bayer_images(inputs, output, mode, compression, headerfooter, series
             print("No .bin files found in the provided inputs.")
             return
         os.makedirs(output, exist_ok=True)
-        for bin_file in bin_files:
+        total = len(bin_files)
+        for idx, bin_file in enumerate(bin_files, 1):
+            if progress_callback:
+                progress_callback(idx, total, bin_file)
             process_bin_file(bin_file, output, mode, compression, headerfooter)
 
 

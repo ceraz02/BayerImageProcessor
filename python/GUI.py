@@ -186,6 +186,17 @@ class BayerImageProcessorTab(tk.Frame):
 	def set_status(self, msg, color="blue"):
 		self.status_label.config(text=msg, fg=color)
 
+	def progress_callback(self, current, total, filename=None):
+		# Called from worker thread, so use after() to update GUI
+		def update():
+			self.progress['maximum'] = total
+			self.progress['value'] = current - 1
+			if filename:
+				self.set_status(f"Processing {current}/{total}: {os.path.basename(filename)}", color="orange")
+			else:
+				self.set_status(f"Processing {current}/{total}", color="orange")
+		self.after(0, update)
+
 	def start_processing(self):
 		if not self.input_paths or not self.output_entry.get():
 			self.set_status("Please select input(s) and output directory", color="red")
@@ -199,10 +210,10 @@ class BayerImageProcessorTab(tk.Frame):
 
 	def process_all(self):
 		# Gather parameters
-		self.output_dir = self.output_entry.get()
 		series_name = self.selected_series.get()
 		if series_name == "(All)":
 			series_name = None
+
 		try:
 			process_bayer_images(
 				self.input_paths,
@@ -211,10 +222,18 @@ class BayerImageProcessorTab(tk.Frame):
 				self.compression_scale.get(),
 				self.header_footer_var.get(),
 				series_name,
+				progress_callback=self.progress_callback
 			)
-			self.set_status("Done", color="green")
+			self.progress['value'] = self.progress['maximum']
+			if series_name:
+				self.set_status(f"Processing complete for series {series_name}!", color="green")
+				messagebox.showinfo("Success", f"Processing complete for series {series_name}!")
+			else:
+				self.set_status("Processing complete!", color="green")
+				messagebox.showinfo("Success", "Processing complete!")
 		except Exception as e:
 			self.set_status(f"Exception: {e}", color="red")
+			messagebox.showwarning("Error", f"Exception: {e}")
 		finally:
 			self.start_button.config(state=tk.NORMAL)
 
