@@ -1,5 +1,5 @@
 /**
- * @file    BayerImageProcessor.cpp
+ * @file    binToPng.cpp
  * @brief   Convert raw Bayer .bin images (4098x4096) to PNG (raw and colorized), extract header/footer metadata, and batch process files/folders.
  *
  * Features:
@@ -11,7 +11,7 @@
  * - Series processing (process all files with a given prefix)
  *
  * Usage:
- *   BayerImageProcessor.exe input1.bin input2.bin -o output_dir -m colorize -c 3 -hf -s SERIES
+ *   binToPng.exe input1.bin input2.bin -o output_dir -m colorize -c 3 -hf -s SERIES
  *
  * @author  Ahmad Asyraf Ahmad Saibudin
  * @date    2025-07-16
@@ -28,11 +28,11 @@
  *          mkdir build
  *          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=C:/<path/to/vcpkg>/scripts/buildsystems/vcpkg.cmake
  *          cd build
- *          cmake --build . --target BayerImageProcessor
- *      Executable:  cpp/build/bin/Debug/BayerImageProcessor.exe
+ *          cmake --build . --target binToPng
+ *      Executable:  cpp/build/bin/Debug/binToPng.exe
  * - For Linux :
- *      Compilation: see Makefile in cpp/. (make test_BayerImageProcessor.exe)
- *      Executable:  cpp/exe/test_BayerImageProcessor.exe
+ *      Compilation: see Makefile in cpp/. (make test_binToPng.exe)
+ *      Executable:  cpp/exe/test_binToPng.exe
  */
 
 #include <opencv2/opencv.hpp>

@@ -27,7 +27,7 @@ test_shiftRightImage.exe : shiftRightImage.o
 test_detectAndFixShift.exe : detectAndFixShift.cpp
 	$(CXX) -o ./exe/$@ $< $(CXXFLAGS) `pkg-config --cflags --libs opencv4`
 
-test_BayerImageProcessor.exe : BayerImageProcessor.cpp
+test_binToPng.exe : binToPng.cpp
 	$(CXX) -o ./exe/$@ $< $(CXXFLAGS) `pkg-config --cflags --libs opencv4`
 
 # Clean up object files and executables

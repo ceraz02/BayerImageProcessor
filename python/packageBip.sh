@@ -4,11 +4,11 @@ cd "$(dirname "$0")"
 
 # Clean previous build/dist if exist
 rm -rf build dist
-[ -f GUI.spec ] && rm GUI.spec
+[ -f BayerImageProcessor.spec ] && rm BayerImageProcessor.spec
 
 # Build the GUI app with PNG icon for Linux/macOS
 pyinstaller \
-    GUI.py \
+    BayerImageProcessor.py \
     --noconfirm \
     --onefile \
     --icon="../assets/bip-icon.png" \

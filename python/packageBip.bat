@@ -9,7 +9,7 @@ if exist BayerImageProcessor.spec del BayerImageProcessor.spec
 
 REM Build the GUI app with icon
 pyinstaller ^
-    GUI.py ^
+    BayerImageProcessor.py ^
     --noconfirm ^
     --onefile ^
     --icon="..\assets\bip-icon.ico" ^

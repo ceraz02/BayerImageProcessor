@@ -18,24 +18,24 @@ find_package(OpenCV REQUIRED)
 
 # Source files
 set(SHIFT_RIGHT_IMAGE_SRC shiftRightImage.c)
-set(BAYER_IMAGE_PROCESSOR_SRC BayerImageProcessor.cpp)
+set(BIN_TO_PNG_SRC binToPng.cpp)
 set(DETECT_AND_FIX_SHIFT_SRC detectAndFixShift.cpp)
 
 # Define executable name
-add_executable(BayerImageProcessor ${BAYER_IMAGE_PROCESSOR_SRC})
+add_executable(binToPng ${BIN_TO_PNG_SRC})
 
 # Add include directories for OpenCV
-target_include_directories(BayerImageProcessor PRIVATE
+target_include_directories(binToPng PRIVATE
     ${OpenCV_INCLUDE_DIRS}
 )
 
 # Link OpenCV to your target
-target_link_libraries(BayerImageProcessor PRIVATE
+target_link_libraries(binToPng PRIVATE
     ${OpenCV_LIBS}
 )
 
 # Optional: Set output directories (optional)
-set_target_properties(BayerImageProcessor PROPERTIES
+set_target_properties(binToPng PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 

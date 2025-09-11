@@ -10,12 +10,12 @@ A comprehensive toolkit for processing raw Bayer images (`.bin` files) from sate
 ## Project Structure
 
 - `cpp/` — C++ source code and build files
-	- `BayerImageProcessor.cpp` — Main C++ tool for converting `.bin` Bayer images to PNG
+	- `binToPng.cpp` — Main C++ tool for converting `.bin` Bayer images to PNG
 	- `detectAndFixShift.cpp` — Detects and corrects image shifts in Bayer images
 	- `shiftRightImage.c` — Utility for shifting images
 	- `build/` — CMake/MSVC build outputs and binaries
 - `python/` — Python scripts for Bayer image processing
-	- `BayerImageProcessor.py` — Main Python tool for conversion and metadata extraction
+	- `binToPng.py` — Main Python tool for conversion and metadata extraction
 	- `detectAndFixShift.py`, `shiftRightImage.py`, `diffBinImage.py` — Additional utilities for shift correction and comparison
 - `test_images/` — Sample `.bin` images and expected outputs for testing
 - `output/` — Output directory for generated PNGs and metadata
@@ -65,7 +65,7 @@ sudo apt-get install python3-tk  # For Debian/Ubuntu systems
 #### Command-Line Interface (CLI)
 
 ```sh
-python python/BayerImageProcessor.py [inputs] [options]
+python python/binToPng.py [inputs] [options]
 ```
 
 **Arguments:**
@@ -78,19 +78,19 @@ python python/BayerImageProcessor.py [inputs] [options]
 **Examples:**
 - Convert a single file:
 	```sh
-	python python/BayerImageProcessor.py test_images/03_20250715_162736_04_b.bin
+	python python/binToPng.py test_images/03_20250715_162736_04_b.bin
 	```
 - Convert all `.bin` files in a folder, colorize only:
 	```sh
-	python python/BayerImageProcessor.py test_images/ -m colorize
+	python python/binToPng.py test_images/ -m colorize
 	```
 - Extract header/footer info only (no PNG):
 	```sh
-	python python/BayerImageProcessor.py test_images/03_20250715_162736_04_b.bin -m none -hf
+	python python/binToPng.py test_images/03_20250715_162736_04_b.bin -m none -hf
 	```
 - Set maximum PNG compression:
 	```sh
-	python python/BayerImageProcessor.py test_images/03_20250715_162736_04_b.bin -c 9
+	python python/binToPng.py test_images/03_20250715_162736_04_b.bin -c 9
 	```
 
 
@@ -161,9 +161,9 @@ This will:
 
 Build with CMake or use provided MSVC solution in `cpp/build/`.
 
-Run the C++ processor:
+Run the C++ converter:
 ```sh
-cpp\build\bin\Debug\BayerImageProcessor.exe -o test_images\output\ test_images\03_20250715_162736_04_b_py.bin
+cpp\build\bin\Debug\binToPng.exe -o test_images\output\ test_images\03_20250715_162736_04_b_py.bin
 ```
 
 Run shift detection/correction:
