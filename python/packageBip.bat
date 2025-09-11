@@ -5,7 +5,7 @@ cd /d %~dp0
 REM Clean previous build/dist if exist
 if exist build rmdir /s /q build
 if exist dist rmdir /s /q dist
-if exist GUI.spec del GUI.spec
+if exist BayerImageProcessor.spec del BayerImageProcessor.spec
 
 REM Build the GUI app with icon
 pyinstaller ^

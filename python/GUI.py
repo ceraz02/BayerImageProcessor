@@ -33,7 +33,7 @@ Authors
 
 Created: 2025-08-01
 Last modified: 2025-09
-Version: 1.0
+Version: 1.0.1
 
 License
 -------
@@ -65,11 +65,11 @@ class BayerImageProcessorTab(tk.Frame):
 	def create_widgets(self):
 		# Input files
 		input_frame = tk.LabelFrame(self, text="Input .bin files or directories")
-		input_frame.pack(fill=tk.X, padx=10, pady=5)
+		input_frame.pack(fill=tk.BOTH, padx=10, pady=5, expand=True)
 		listbox_frame = tk.Frame(input_frame)
-		listbox_frame.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.X, expand=True)
+		listbox_frame.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.BOTH, expand=True)
 		self.input_listbox = tk.Listbox(listbox_frame, width=60, height=4, selectmode=tk.EXTENDED)
-		self.input_listbox.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.X, expand=True)
+		self.input_listbox.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.BOTH, expand=True)
 		scrl = tk.Scrollbar(listbox_frame, command=self.input_listbox.yview)
 		scrl.pack(side=tk.RIGHT, fill=tk.Y)
 		self.input_listbox.config(yscrollcommand=scrl.set)
@@ -98,7 +98,7 @@ class BayerImageProcessorTab(tk.Frame):
 		mode_frame = tk.LabelFrame(self, text="Output mode")
 		mode_frame.pack(fill=tk.X, padx=10, pady=5)
 		self.mode_var = tk.StringVar(value="colorize")
-		for text, val in [("Normal", "normal"), ("Colorize", "colorize"), ("Both", "both"), ("None", "none")]:
+		for text, val in [("Normal (Grayscale)", "normal"), ("Colorize", "colorize"), ("Both", "both"), ("None", "none")]:
 			tk.Radiobutton(mode_frame, text=text, variable=self.mode_var, value=val).pack(side=tk.LEFT, padx=5)
 
 		# Compression
@@ -229,8 +229,15 @@ class ShiftRightImageTab(tk.Frame):
 		file_frame = tk.LabelFrame(self, text="Input .bin file")
 		file_frame.pack(fill=tk.X, padx=10, pady=5)
 		self.input_entry = tk.Entry(file_frame, width=50)
-		self.input_entry.pack(side=tk.LEFT, padx=5, pady=5)
+		self.input_entry.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.X, expand=True)
 		tk.Button(file_frame, text="Browse", command=self.browse_file).pack(side=tk.LEFT, padx=5)
+
+		# Output file
+		out_frame = tk.LabelFrame(self, text="Output fixed .bin file")
+		out_frame.pack(fill=tk.X, padx=10, pady=5)
+		self.output_entry = tk.Entry(out_frame, width=50)
+		self.output_entry.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.X, expand=True)
+		tk.Button(out_frame, text="Browse", command=self.browse_output_file).pack(side=tk.LEFT, padx=5)
 
 		# Shift count
 		shift_frame = tk.LabelFrame(self, text="Shift count (bytes)")
@@ -273,20 +280,27 @@ class ShiftRightImageTab(tk.Frame):
 			self.input_entry.delete(0, tk.END)
 			self.input_entry.insert(0, f)
 
+	def browse_output_file(self):
+		f = filedialog.asksaveasfilename(title="Save fixed .bin file as", defaultextension=".bin", filetypes=[("Binary files", "*.bin")])
+		if f:
+			self.output_entry.delete(0, tk.END)
+			self.output_entry.insert(0, f)
+
 	def set_status(self, msg, color="blue"):
 		self.status_label.config(text=msg, fg=color)
 
 	def start_processing(self):
 		img_file = self.input_entry.get()
+		output_file = self.output_entry.get()
 		shift_count = self.shift_entry.get()
 		start_row = self.row_entry.get()
 		start_col = self.col_entry.get()
 		img_width = self.width_entry.get()
 		img_height = self.height_entry.get()
-		if not img_file or not shift_count or not start_row:
+		if not img_file or not shift_count or not start_row or not output_file:
 			self.set_status("Please fill all required fields", color="red")
 			return
-		args = [os.path.join(os.path.dirname(__file__), "shiftRightImage.py"), img_file, shift_count, start_row]
+		args = [os.path.join(os.path.dirname(__file__), "shiftRightImage.py"), img_file, output_file, shift_count, start_row]
 		if start_col:
 			args.append(start_col)
 		if img_width and img_height:
@@ -300,12 +314,13 @@ class ShiftRightImageTab(tk.Frame):
 		try:
 			# args: [img_file, shift_count, start_row, start_col, img_width, img_height]
 			img_file = args[1]
-			shift_count = int(args[2])
-			start_row = int(args[3])
-			start_col = int(args[4]) if len(args) > 4 else 0
-			img_width = int(args[5]) if len(args) > 5 else 4096
-			img_height = int(args[6]) if len(args) > 6 else 4098
-			ret = shift_right_image_file(img_file, shift_count, start_row, start_col, img_width, img_height)
+			output_file = args[2]
+			shift_count = int(args[3])
+			start_row = int(args[4])
+			start_col = int(args[5]) if len(args) > 5 else 0
+			img_width = int(args[6]) if len(args) > 6 else 4096
+			img_height = int(args[7]) if len(args) > 7 else 4098
+			ret = shift_right_image_file(img_file, output_file, shift_count, start_row, start_col, img_width, img_height)
 			if ret == 0:
 				self.set_status("Done", color="green")
 			else:
@@ -326,14 +341,14 @@ class DetectAndFixShiftTab(tk.Frame):
 		file_frame = tk.LabelFrame(self, text="Input .bin file")
 		file_frame.pack(fill=tk.X, padx=10, pady=5)
 		self.input_entry = tk.Entry(file_frame, width=50)
-		self.input_entry.pack(side=tk.LEFT, padx=5, pady=5)
+		self.input_entry.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.X, expand=True)
 		tk.Button(file_frame, text="Browse", command=self.browse_file).pack(side=tk.LEFT, padx=5)
 
 		# Output file
 		out_frame = tk.LabelFrame(self, text="Output fixed .bin file")
 		out_frame.pack(fill=tk.X, padx=10, pady=5)
 		self.output_entry = tk.Entry(out_frame, width=50)
-		self.output_entry.pack(side=tk.LEFT, padx=5, pady=5)
+		self.output_entry.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.X, expand=True)
 		tk.Button(out_frame, text="Browse", command=self.browse_output_file).pack(side=tk.LEFT, padx=5)
 
 		# Status

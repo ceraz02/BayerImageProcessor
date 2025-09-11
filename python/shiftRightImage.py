@@ -12,7 +12,7 @@ Authors
 
 Created: 2025-07-16
 Last modified: 2025-09
-Version: 1.0
+Version: 1.0.1
 
 License
 -------
@@ -64,7 +64,7 @@ def shift_image_region_numpy(buf: np.ndarray, img_width: int, img_height: int,
     return 0
 
 
-def shift_right_image_file(img_file, shift_count, start_row, start_col=0, img_width=4096, img_height=4098):
+def shift_right_image_file(img_file, output_file, shift_count, start_row, start_col=0, img_width=4096, img_height=4098):
     if shift_count < 1:
         print(f"ERROR in shiftRightImage: Invalid shift_count {shift_count}. Must be >= 1.")
         return 1
@@ -84,7 +84,7 @@ def shift_right_image_file(img_file, shift_count, start_row, start_col=0, img_wi
         return 1
 
     try:
-        with open(img_file, "rb+") as fd:
+        with open(img_file, "rb") as fd:
             buf = np.frombuffer(fd.read(), dtype=np.uint8).copy()
             if buf.size != img_width * img_height:
                 print(f"ERROR in shiftRightImage: Incomplete read. Got {buf.size} pixels instead of {img_width * img_height}")
@@ -95,32 +95,32 @@ def shift_right_image_file(img_file, shift_count, start_row, start_col=0, img_wi
                 print(f"ERROR in shiftRightImage: shiftImageRegion failed with error code {result}")
                 return result
 
-            fd.seek(0)
-            fd.write(buf.tobytes())
-            fd.flush()
+        with open(output_file, "wb") as out_fd:
+            out_fd.write(buf.tobytes())
 
     except Exception as e:
         print(f"ERROR in shiftRightImage: Exception occurred - {e}")
         return 1
 
-    print(f"Successfully shifted image region in {img_file}")
+    print(f"Successfully shifted image region in {img_file} and wrote to {output_file}")
     return 0
 
 def main():
 
     argc = len(sys.argv)
-    if argc not in (4, 5, 7):
-        print(f"USAGE: {sys.argv[0]} img_file shift_count start_row [start_col [img_width img_height]]")
+    if argc not in (5, 6, 8):
+        print(f"USAGE: {sys.argv[0]} img_file output_file shift_count start_row [start_col [img_width img_height]]")
         return 1
 
     img_file = sys.argv[1]
-    shift_count = int(sys.argv[2])
-    start_row = int(sys.argv[3])
-    start_col = int(sys.argv[4]) if argc >= 5 else 0
-    img_width = int(sys.argv[5]) if argc == 7 else IMG_WIDTH
-    img_height = int(sys.argv[6]) if argc == 7 else FRAME_HEIGHT
+    output_file = sys.argv[2]
+    shift_count = int(sys.argv[3])
+    start_row = int(sys.argv[4])
+    start_col = int(sys.argv[5]) if argc >= 6 else 0
+    img_width = int(sys.argv[6]) if argc == 8 else IMG_WIDTH
+    img_height = int(sys.argv[7]) if argc == 8 else FRAME_HEIGHT
 
-    return shift_right_image_file(img_file, shift_count, start_row, start_col, img_width, img_height)
+    return shift_right_image_file(img_file, output_file, shift_count, start_row, start_col, img_width, img_height)
 
 
 if __name__ == "__main__":
