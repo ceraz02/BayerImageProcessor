@@ -10,8 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Set C standard
 set(CMAKE_C_STANDARD 11)
 
-# Ensure vcpkg is integrated
-set(CMAKE_TOOLCHAIN_FILE "C:/Users/Ahmad/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "vcpkg toolchain file" FORCE)
 
 # Find OpenCV (vcpkg will set this up automatically)
 find_package(OpenCV REQUIRED)
